@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
+class BrandImage extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'brand_id',
+        'image',
+    ];
+    public function getImageAttribute($value)
+    {
+        return ($value) ? Storage::url($value) : $value;
+    }
+
+    public function setImageAttribute($value)
+    {
+        // if (is_file($value)) {
+            $this->attributes['image'] = $value ? Storage::disk('public')->put('uploads/Brand', $value) : $value;
+
+            // $this->attributes['image'] =  $value->store('uploads/Brand');
+        // }
+    }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+}
